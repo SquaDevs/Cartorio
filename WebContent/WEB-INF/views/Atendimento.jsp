@@ -44,6 +44,6 @@
 		</div>
 	</form>
 	<script src="js/jquery.min.js"></script>
-	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/bootstrap.js"></script>
 </body>
 </html>

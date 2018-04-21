@@ -40,12 +40,8 @@ public class SenhaController {
 	@RequestMapping("/inserir_senha")
 	public String inserirSenha(@ModelAttribute Senha senha,Model model) {
 		try {
-			Servico servico  = servicoService.listarServico(senha.getServico().getId());
-			senha.setServico(servico);
-			int ultimoNumero = senhaService.ultimoNumeroByServico(servico); 
-			senha.setNumero(ultimoNumero + 1);
 			senhaService.inserirSenha(senha);
-			return"index";
+			return "index";
 			
 		} catch (Exception e) {
 			e.printStackTrace();
