@@ -13,13 +13,20 @@ import br.com.cartorio.entity.SubServico;
 @Service
 public class SenhaService {
 	SenhaDAO dao;
+	ServicoService servicoService;
 	
 	@Autowired
-	public SenhaService(SenhaDAO dao) {
+	public SenhaService(SenhaDAO dao, ServicoService servicoService) {
 		this.dao = dao;
+		this.servicoService = servicoService;
 	}
 	
 	public int inserirSenha(Senha senha) throws IOException {
+		Servico servico  = servicoService.listarServico(senha.getServico().getId());
+		senha.setServico(servico);
+		int ultimoNumero = ultimoNumeroByServico(servico); 
+		senha.setNumero(ultimoNumero + 1);
+		
 		return dao.inserirSenha(senha);
 	}
 	
@@ -63,8 +70,13 @@ public class SenhaService {
 		return dao.listarSenhasBySubServicoEmAtendimento(subServico);
 	}
 	
+	public Senha listarSenhasByNumero(int numero, Servico servico) throws IOException {
+		return dao.listarSenhasByNumero(numero, servico);
+	}
+	
 	public int ultimoNumeroByServico(Servico servico) throws IOException{
 		return dao.ultimoNumeroByServico(servico);
 	}
+	
 	
 }

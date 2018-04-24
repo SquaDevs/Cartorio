@@ -40,11 +40,12 @@ public class Atendimento implements Serializable{
 	@Column(name="status")
 	private String status;
 	
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:ss:mm")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@NotNull
 	@Column(name="data_inicio")
 	private Date data_inicio;
 	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Column(name="data_fim")
 	private Date data_fim;
 	

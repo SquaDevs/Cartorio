@@ -161,6 +161,18 @@ public class SenhaDAO {
 		return result;
 	}
 	
+	public Senha listarSenhasByNumero(int numero, Servico servico) throws IOException {
+		String jpql = "select s from Senha s "
+				    + "where s.numero =:pNumero and s.servico.id =:pServico";
+		
+		Query query = manager.createQuery(jpql);
+		query.setParameter("pNumero", numero);
+		query.setParameter("pServico", servico);
+		Senha result = (Senha) query.getSingleResult();
+		
+		return result;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public int ultimoNumeroByServico(Servico servico) throws IOException{
 
