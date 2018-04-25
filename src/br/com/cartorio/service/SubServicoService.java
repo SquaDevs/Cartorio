@@ -38,7 +38,7 @@ public class SubServicoService {
 		return dao.listarSubServicosByServico(servico);
 	}
 	
-	public int maxOrdem(SubServico subServico) throws IOException{
-		return dao.maxOrdem(subServico);
+	public int maxOrdem(Servico servico) throws IOException{
+		return dao.maxOrdem(servico);
 	}
 }

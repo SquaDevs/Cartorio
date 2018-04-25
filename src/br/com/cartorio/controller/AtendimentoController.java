@@ -112,7 +112,7 @@ public class AtendimentoController {
 			
 			Senha senhaResgatada = senhaService.listarSenha(idSenha);
 			SubServico subServicoResgatado = subServicoService.listarSubServico(idSubServico);
-			int maxOrdem = subServicoService.maxOrdem(subServicoResgatado);
+			int maxOrdem = subServicoService.maxOrdem(subServicoResgatado.getServico());
 			model.addAttribute("senha", senhaResgatada);
 			model.addAttribute("subServico", subServicoResgatado);
 			
