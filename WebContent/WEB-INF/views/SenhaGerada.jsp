@@ -34,11 +34,11 @@
 				</div>
 				<div class="row">
 					<label>Previsão de inicio: </label>
-					<input disabled="disabled" type="text" name="preivisaoIncio" value=""/>
+					<label>${previsaoInicio}</label>
 				</div>
 				<div class="row">
 					<label>Previsão de termino: </label>
-					<input disabled="disabled" type="text" name="preivisaoTermino" value=""/>
+					<label>${previsaoFim}</label>
 				</div>
 				<br><br>
 				<div class="row">

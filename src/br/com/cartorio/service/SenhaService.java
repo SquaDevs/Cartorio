@@ -78,5 +78,11 @@ public class SenhaService {
 		return dao.ultimoNumeroByServico(servico);
 	}
 	
+	public double previsaoInicio() throws IOException{
+		return dao.previsaoInicio();
+	}
 	
+	public double previsaoTermino(Servico servico) throws IOException{
+		return dao.previsaoTermino(servico);
+	}
 }

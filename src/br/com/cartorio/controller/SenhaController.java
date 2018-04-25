@@ -40,8 +40,14 @@ public class SenhaController {
 	@RequestMapping("/inserir_senha")
 	public String inserirSenha(@ModelAttribute Senha senha,Model model) {
 		try {
-			senhaService.inserirSenha(senha);
-			return "index";
+			int idSenhaGerada = senhaService.inserirSenha(senha);
+			Senha senhaGerada = senhaService.listarSenha(idSenhaGerada);
+			
+			model.addAttribute("senha", senhaGerada);
+			model.addAttribute("previsaoInicio", senhaService.previsaoInicio());
+			model.addAttribute("previsaoFim", senhaService.previsaoTermino(senhaGerada.getServico()));
+			
+			return "SenhaGerada";
 			
 		} catch (Exception e) {
 			e.printStackTrace();
