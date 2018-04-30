@@ -1,4 +1,4 @@
-package br.com.cartorio.endpoint;
+package br.com.cartorio.rest;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,12 +15,12 @@ import br.com.cartorio.service.ServicoService;
 
 @RestController
 @RequestMapping("api/servico")
-public class ServicoEndpoint {
+public class ServicoRestController {
 	
 	private final ServicoService servicoService;
 	
 	@Autowired
-	public ServicoEndpoint(ServicoService servicoService) {
+	public ServicoRestController(ServicoService servicoService) {
 		this.servicoService = servicoService;
 	}
 	

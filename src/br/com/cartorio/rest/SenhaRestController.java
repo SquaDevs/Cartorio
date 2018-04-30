@@ -1,4 +1,4 @@
-package br.com.cartorio.endpoint;
+package br.com.cartorio.rest;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,12 +19,12 @@ import br.com.cartorio.service.SenhaService;
 
 @RestController
 @RequestMapping("api/senha")
-public class SenhaEndpoint {
+public class SenhaRestController {
 	
 	private final SenhaService senhaService;
 	
 	@Autowired
-	public SenhaEndpoint(SenhaService senhaService) {
+	public SenhaRestController(SenhaService senhaService) {
 		this.senhaService = senhaService;
 	}
 	
