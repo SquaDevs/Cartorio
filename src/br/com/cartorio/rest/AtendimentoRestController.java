@@ -16,7 +16,7 @@ import br.com.cartorio.entity.Atendimento;
 import br.com.cartorio.service.AtendimentoService;
 
 @RestController
-@RequestMapping("api/atendimento")
+@RequestMapping("rest/atendimento")
 public class AtendimentoRestController {
 	
 	private final AtendimentoService atendimentoService;
@@ -26,7 +26,7 @@ public class AtendimentoRestController {
 		this.atendimentoService = atendimentoService;
 	}
 	
-	@RequestMapping(method=RequestMethod.GET, value="/all")
+	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<List<Atendimento>> listarAtendimentos() {
 		List<Atendimento> atendimentos = null;
 		

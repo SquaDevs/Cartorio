@@ -18,7 +18,7 @@ import br.com.cartorio.entity.Senha;
 import br.com.cartorio.service.SenhaService;
 
 @RestController
-@RequestMapping("api/senha")
+@RequestMapping("rest/senha")
 public class SenhaRestController {
 	
 	private final SenhaService senhaService;
@@ -29,7 +29,7 @@ public class SenhaRestController {
 	}
 	
 	@Transactional
-	@RequestMapping(method=RequestMethod.POST, value="/salvar" )
+	@RequestMapping(method=RequestMethod.POST )
 	public ResponseEntity<Senha> inserirSenha(@RequestBody Senha senha) {
 		try {
 			senhaService.inserirSenha(senha);
@@ -40,7 +40,7 @@ public class SenhaRestController {
 		}
 	}
 	
-	@RequestMapping(method=RequestMethod.GET, value="/all" )
+	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<List<Senha>> listarSenhas() {
 		List<Senha> senhas = null;
 		
