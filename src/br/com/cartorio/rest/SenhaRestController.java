@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +29,12 @@ public class SenhaRestController {
 		this.senhaService = senhaService;
 	}
 	
+	@CrossOrigin
 	@Transactional
-	@RequestMapping(method=RequestMethod.POST )
+	@RequestMapping(method=RequestMethod.POST ,produces = "application/json", consumes = "application/json")
 	public ResponseEntity<Senha> inserirSenha(@RequestBody Senha senha) {
+		System.out.println( senha);
+		
 		try {
 			senhaService.inserirSenha(senha);
 			return new ResponseEntity<Senha>(senha, HttpStatus.CREATED);
@@ -38,6 +42,7 @@ public class SenhaRestController {
 			e.printStackTrace();
 			return new ResponseEntity<Senha>(senha, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		
 	}
 	
 	@RequestMapping(method=RequestMethod.GET)
@@ -66,6 +71,7 @@ public class SenhaRestController {
 		}
 	}
 	
+	@CrossOrigin
 	@RequestMapping(method=RequestMethod.GET, value="/painel" )
 	public ResponseEntity<List<Senha>> listarSenhasPainel() {
 		List<Senha> senhas = null;
@@ -82,3 +88,11 @@ public class SenhaRestController {
 	}
 	
 }
+
+
+
+
+	
+	
+	
+
