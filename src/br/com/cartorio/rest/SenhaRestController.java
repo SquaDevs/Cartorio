@@ -1,6 +1,9 @@
 package br.com.cartorio.rest;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -38,9 +41,10 @@ public class SenhaRestController {
 		try {	
 			senhaService.inserirSenha(senha);
 			rest.setSenha(senha);
-			rest.setPrevisaoFim(senhaService.previsaoTermino(senha.getServico()));
-			rest.setPrevisaoIni(senhaService.previsaoInicio(senha.getServico()));
-			
+			Date previsaoFim =SenhaRest.calcularTempoMinutos(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
+			rest.setPrevisaoFim(previsaoFim);
+			Date previsaoIni = SenhaRest.calcularTempoMinutos(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
+			rest.setPrevisaoIni(previsaoIni);
 				System.out.println(rest.getPrevisaoFim());
 			
 			return new ResponseEntity<SenhaRest>(rest, HttpStatus.CREATED);
@@ -71,8 +75,10 @@ public class SenhaRestController {
 		try {
 			senha = senhaService.listarSenha(id);
 			rest.setSenha(senha);
-			rest.setPrevisaoFim(senhaService.previsaoTermino(senha.getServico()));
-			rest.setPrevisaoIni(senhaService.previsaoInicio(senha.getServico()));
+			String previsaoFim =SenhaRest.calcularTempoMinutosStr(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
+			rest.setPrevisaoFimStr(previsaoFim);
+			String previsaoIni = SenhaRest.calcularTempoMinutosStr(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
+			rest.setPrevisaoIniStr(previsaoIni);
 			
 			
 			return new ResponseEntity<SenhaRest>(rest, HttpStatus.OK);
@@ -104,25 +110,59 @@ public class SenhaRestController {
 
 class SenhaRest {
 	private Senha  senha;
-	private Double previsaoIni;
-	private Double previsaoFim;
+	private Date previsaoIni;
+	private Date previsaoFim;
+	private String previsaoIniStr;
+	private String previsaoFimStr;
+	
 	public Senha getSenha() {
 		return senha;
 	}
 	public void setSenha(Senha senha) {
 		this.senha = senha;
 	}
-	public Double getPrevisaoIni() {
+	
+	
+	public Date getPrevisaoIni() {
 		return previsaoIni;
 	}
-	public void setPrevisaoIni(Double previsaoIni) {
+	public void setPrevisaoIni(Date previsaoIni) {
 		this.previsaoIni = previsaoIni;
 	}
-	public Double getPrevisaoFim() {
+	public Date getPrevisaoFim() {
 		return previsaoFim;
 	}
-	public void setPrevisaoFim(Double previsaoFim) {
+	public void setPrevisaoFim(Date previsaoFim) {
 		this.previsaoFim = previsaoFim;
+	}
+	public String getPrevisaoIniStr() {
+		return previsaoIniStr;
+	}
+	public void setPrevisaoIniStr(String previsaoIniStr) {
+		this.previsaoIniStr = previsaoIniStr;
+	}
+	public String getPrevisaoFimStr() {
+		return previsaoFimStr;
+	}
+	public void setPrevisaoFimStr(String previsaoFimStr) {
+		this.previsaoFimStr = previsaoFimStr;
+	}
+	public static String	calcularTempoMinutosStr(Date data, double minutosd) {
+		int minutos = (int) minutosd;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(data);
+		calendar.add(Calendar.MINUTE,minutos);
+		Date novaData = calendar.getTime();
+		SimpleDateFormat  dataFormat = new SimpleDateFormat("dd/MM/yyyy");
+		return dataFormat.format(novaData);
+	}
+	public static Date	calcularTempoMinutos(Date data, double minutosd) {
+		int minutos = (int) minutosd;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(data);
+		calendar.add(Calendar.MINUTE,minutos);
+		Date novaData = calendar.getTime();
+		return novaData;
 	}
 	
 	
