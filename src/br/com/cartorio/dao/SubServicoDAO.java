@@ -53,16 +53,20 @@ public class SubServicoDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public int maxOrdem(SubServico subServico) throws IOException{
+	public int maxOrdem(Servico servico) throws IOException{
 		String jpql = "select s from SubServico s "
-				+ "where s.servico = :pServico";
+					+ "where s.servico = :pServico";
+	
 		Query query = manager.createQuery(jpql);
-		query.setParameter("pServico", subServico.getServico());
+		query.setParameter("pServico", servico);
+		
+		
 		List<SubServico> subServicoRetornado = query.getResultList();
-		int result = 0;
-		for (SubServico subServicos : subServicoRetornado) {
-			if (subServicos.getOrdem() > result) {
-				result = subServicos.getOrdem();
+		Integer result = 0;
+		
+		for (SubServico subServico : subServicoRetornado) {
+			if (subServico.getOrdem() > result) {
+				result = subServico.getOrdem();
 			}
 		}
 		return result;

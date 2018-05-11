@@ -44,8 +44,10 @@ public class SenhaController {
 			Senha senhaGerada = senhaService.listarSenha(idSenhaGerada);
 			
 			model.addAttribute("senha", senhaGerada);
-			model.addAttribute("previsaoInicio", senhaService.previsaoInicio());
+			model.addAttribute("previsaoInicio", senhaService.previsaoInicio(senhaGerada.getServico()));
 			model.addAttribute("previsaoFim", senhaService.previsaoTermino(senhaGerada.getServico()));
+			
+//			System.out.println(senhaService.previsaoInicio(senhaGerada.getServico()));
 			
 			return "SenhaGerada";
 			

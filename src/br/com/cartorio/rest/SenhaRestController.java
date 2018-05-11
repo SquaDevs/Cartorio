@@ -32,15 +32,21 @@ public class SenhaRestController {
 	@CrossOrigin
 	@Transactional
 	@RequestMapping(method=RequestMethod.POST ,produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Senha> inserirSenha(@RequestBody Senha senha) {
+	public ResponseEntity<SenhaRest> inserirSenha(@RequestBody Senha senha) {
 		System.out.println( senha);
-		
-		try {
+		SenhaRest  rest =   new SenhaRest();
+		try {	
 			senhaService.inserirSenha(senha);
-			return new ResponseEntity<Senha>(senha, HttpStatus.CREATED);
+			rest.setSenha(senha);
+			rest.setPrevisaoFim(senhaService.previsaoTermino(senha.getServico()));
+			rest.setPrevisaoIni(senhaService.previsaoInicio(senha.getServico()));
+			
+				System.out.println(rest.getPrevisaoFim());
+			
+			return new ResponseEntity<SenhaRest>(rest, HttpStatus.CREATED);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResponseEntity<Senha>(senha, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<SenhaRest>(rest, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
@@ -59,15 +65,20 @@ public class SenhaRestController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/{id}" )
-	public ResponseEntity<Senha> listarSenha(@PathVariable("id") int id) {
+	public ResponseEntity<SenhaRest> listarSenha(@PathVariable("id") int id) {
 		Senha senha = null;
-		
+		SenhaRest  rest =   new SenhaRest();
 		try {
 			senha = senhaService.listarSenha(id);
-			return new ResponseEntity<Senha>(senha, HttpStatus.OK);
+			rest.setSenha(senha);
+			rest.setPrevisaoFim(senhaService.previsaoTermino(senha.getServico()));
+			rest.setPrevisaoIni(senhaService.previsaoInicio(senha.getServico()));
+			
+			
+			return new ResponseEntity<SenhaRest>(rest, HttpStatus.OK);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResponseEntity<Senha>(senha, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<SenhaRest>(rest, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -91,7 +102,31 @@ public class SenhaRestController {
 
 
 
-
+class SenhaRest {
+	private Senha  senha;
+	private Double previsaoIni;
+	private Double previsaoFim;
+	public Senha getSenha() {
+		return senha;
+	}
+	public void setSenha(Senha senha) {
+		this.senha = senha;
+	}
+	public Double getPrevisaoIni() {
+		return previsaoIni;
+	}
+	public void setPrevisaoIni(Double previsaoIni) {
+		this.previsaoIni = previsaoIni;
+	}
+	public Double getPrevisaoFim() {
+		return previsaoFim;
+	}
+	public void setPrevisaoFim(Double previsaoFim) {
+		this.previsaoFim = previsaoFim;
+	}
+	
+	
+}
 	
 	
 	

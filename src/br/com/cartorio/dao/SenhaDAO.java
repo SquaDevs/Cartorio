@@ -1,6 +1,7 @@
 package br.com.cartorio.dao;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.com.cartorio.entity.Senha;
@@ -19,6 +21,11 @@ import br.com.cartorio.service.SubServicoService;
 public class SenhaDAO {
 	
 	SubServicoService subServicoService;
+	
+	@Autowired
+	public SenhaDAO(SubServicoService subServicoService) {
+		this.subServicoService = subServicoService;
+	}
 
 	@PersistenceContext
 	EntityManager manager;
@@ -90,7 +97,7 @@ public class SenhaDAO {
 
 		if (senhas.isEmpty()) {
 			jpql = "select s from Atendimento a " + " inner join a.senha s " + "where a.subServico.ordem =:pOrdem "
-					+ "	 and a.status = 'Fechado' " + "	 and s.servico.id =:pServico";
+					+ "	 and a.status = 'Atendimento Finalizado' " + "	 and s.servico.id =:pServico";
 
 			Query query = manager.createQuery(jpql);
 			query.setParameter("pOrdem", subServico.getOrdem() - 1);
@@ -101,7 +108,7 @@ public class SenhaDAO {
 
 		} else {
 			jpql = "select s from Atendimento a " + " inner join a.senha s " + "where a.subServico.ordem =:pOrdem "
-					+ "	 and a.status = 'Fechado' " + "	 and s.servico.id =:pServico"
+					+ "	 and a.status = 'Atendimento Finalizado' " + "	 and s.servico.id =:pServico"
 					+ "	 and s.id not in (:pSenhas)";
 
 			Query query = manager.createQuery(jpql);
@@ -143,7 +150,7 @@ public class SenhaDAO {
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasBySubServicoEmAtendimento(SubServico subServico) throws IOException {
 		String jpql = "select s from Atendimento a " + " inner join a.senha s "
-				+ "where a.subServico.id =:pSubServico and a.status = 'Em Atendimento'";
+				+ "where a.subServico.id =:pSubServico and a.status = 'Atendimento em Andamento'";
 
 		Query query = manager.createQuery(jpql);
 		query.setParameter("pSubServico", subServico.getId());
@@ -179,60 +186,54 @@ public class SenhaDAO {
 		return maior;
 	}
 
-	public double previsaoInicio() throws IOException{
+	public Double previsaoInicio(Servico servico) throws IOException{
 		
-		String jpqlCOUNT = "Select count(a.data_inicio )  from Senha s "
-				+ "inner join Atendimento a "
-				+ "on a.id_senha = s.id "
-				+ "inner join SubServico sub "
-				+ "on sub.id = a.id_subservico "
-				+ "where sub.ordem = 1";
-		Query queryCOUNT = manager.createQuery(jpqlCOUNT);
-		int count = queryCOUNT.getFirstResult();
+		String jpql = "Select avg(TIMESTAMPDIFF(minute, s.data_inicio, a.data_inicio)) "
+					+ "from senha s "
+					+ "inner join atendimento a "
+					+ "	 on a.id_senha = s.id "
+					+ "inner join subservico sub "
+					+ "	 on sub.id = a.id_subservico "
+					+ "where sub.ordem = 1 and sub.id_servico = :pServico";
 		
-		String jpqlSUM = "Select sum((a.data_inicio))  from Senha s "
-				+ "inner join Atendimento a "
-				+ "on a.id_senha = s.id "
-				+ "inner join SubServico sub "
-				+ "on sub.id = a.id_subservico "
-				+ "where sub.ordem = 1";
-		Query querySUM = manager.createQuery(jpqlSUM);
-		double sum = querySUM.getFirstResult();
+		Query query = manager.createNativeQuery(jpql);
+		query.setParameter("pServico", servico.getId());
+		BigDecimal mediaBigDecimal = (BigDecimal) query.getSingleResult();
+		Double media;
 		
-		double presisao = (sum/count);
+		if(mediaBigDecimal == null ) {
+			media = null;
+		}else {
+			media = mediaBigDecimal.doubleValue();
+		}
 		
-		return presisao;
+		return media;
 	}
 	
-	public double previsaoTermino(Servico servico) throws IOException{
+	public Double previsaoTermino(Servico servico) throws IOException{
 		
-		String jpqlSubServico = "Select s from SubServico s where s.servico = :sServico";
-		Query querySubServico = manager.createQuery(jpqlSubServico);
-		querySubServico.setParameter("sServico", servico);
-		SubServico subServicoResgatado = (SubServico) querySubServico.getSingleResult();
-		int maxOrdem = subServicoService.maxOrdem(subServicoResgatado);
+		Integer maxOrdem = subServicoService.maxOrdem(servico);
+
+		String jpql = "Select avg(TIMESTAMPDIFF(minute, s.data_inicio, a.data_fim)) "
+				+ "from senha s "
+				+ "inner join atendimento a "
+				+ "	 on a.id_senha = s.id "
+				+ "inner join subservico sub "
+				+ "	 on sub.id = a.id_subservico "
+				+ "where sub.ordem = :pOrdem and sub.id_servico = :pServico";
+	
+		Query query = manager.createNativeQuery(jpql);
+		query.setParameter("pServico", servico.getId());
+		query.setParameter("pOrdem", maxOrdem);
+		BigDecimal mediaBigDecimal = (BigDecimal) query.getSingleResult();
+		Double media;
 		
+		if(mediaBigDecimal == null ) {
+			media = null;
+		}else {
+			media = mediaBigDecimal.doubleValue();
+		}
 		
-		String jpqlCOUNT = "Select count(s.data_fim - a.data_fim)  from Senha s "
-				+ "inner join Atendimento a "
-				+ "on a.id_senha = s.id "
-				+ "inner join SubServico sub "
-				+ "on sub.id = a.id_subservico "
-				+ "where sub.ordem = " + maxOrdem;
-		Query queryCOUNT = manager.createQuery(jpqlCOUNT);
-		int count = queryCOUNT.getFirstResult();
-		
-		String jpqlSUM = "Select sum((s.data_fim - a.data_fim))  from Senha s "
-				+ "inner join Atendimento a "
-				+ "on a.id_senha = s.id "
-				+ "inner join SubServico sub "
-				+ "on sub.id = a.id_subservico "
-				+ "where sub.ordem = " + maxOrdem;
-		Query querySUM = manager.createQuery(jpqlSUM);
-		double sum = querySUM.getFirstResult();
-		
-		double presisao = (sum/count);
-		
-		return presisao;
+		return media;
 	}
 }
