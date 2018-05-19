@@ -38,7 +38,7 @@
 			<div class="form-group col-md-12">
 				<div>
 					<a href="painel">Painel</a><br>
-				</div>
+				</div> 
 			</div>
 			<br> <br>
 			<div class="form-group col-md-12">

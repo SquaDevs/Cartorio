@@ -1,6 +1,10 @@
 package br.com.cartorio.rest;
 
 import java.io.IOException;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -32,15 +36,23 @@ public class SenhaRestController {
 	@CrossOrigin
 	@Transactional
 	@RequestMapping(method=RequestMethod.POST ,produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Senha> inserirSenha(@RequestBody Senha senha) {
+
+	public ResponseEntity<SenhaRest> inserirSenha(@RequestBody Senha senha) {
 		System.out.println( senha);
-		
-		try {
+		SenhaRest  rest =   new SenhaRest();
+		try {	
 			senhaService.inserirSenha(senha);
-			return new ResponseEntity<Senha>(senha, HttpStatus.CREATED);
+			rest.setSenha(senha);
+			Date previsaoFim =SenhaRest.calcularTempoMinutos(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
+			rest.setPrevisaoFim(previsaoFim);
+			Date previsaoIni = SenhaRest.calcularTempoMinutos(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
+			rest.setPrevisaoIni(previsaoIni);
+				System.out.println(rest.getPrevisaoFim());
+			
+			return new ResponseEntity<SenhaRest>(rest, HttpStatus.CREATED);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResponseEntity<Senha>(senha, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<SenhaRest>(rest, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
@@ -59,15 +71,22 @@ public class SenhaRestController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/{id}" )
-	public ResponseEntity<Senha> listarSenha(@PathVariable("id") int id) {
+	public ResponseEntity<SenhaRest> listarSenha(@PathVariable("id") int id) {
 		Senha senha = null;
-		
+		SenhaRest  rest =   new SenhaRest();
 		try {
 			senha = senhaService.listarSenha(id);
-			return new ResponseEntity<Senha>(senha, HttpStatus.OK);
+			rest.setSenha(senha);
+			String previsaoFim =SenhaRest.calcularTempoMinutosStr(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
+			rest.setPrevisaoFimStr(previsaoFim);
+			String previsaoIni = SenhaRest.calcularTempoMinutosStr(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
+			rest.setPrevisaoIniStr(previsaoIni);
+			
+			
+			return new ResponseEntity<SenhaRest>(rest, HttpStatus.OK);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResponseEntity<Senha>(senha, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<SenhaRest>(rest, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -89,10 +108,65 @@ public class SenhaRestController {
 	
 }
 
-
-
-
+class SenhaRest {
+	private Senha  senha;
+	private Date previsaoIni;
+	private Date previsaoFim;
+	private String previsaoIniStr;
+	private String previsaoFimStr;
 	
+	public Senha getSenha() {
+		return senha;
+	}
+	public void setSenha(Senha senha) {
+		this.senha = senha;
+	}
+	
+	
+	public Date getPrevisaoIni() {
+		return previsaoIni;
+	}
+	public void setPrevisaoIni(Date previsaoIni) {
+		this.previsaoIni = previsaoIni;
+	}
+	public Date getPrevisaoFim() {
+		return previsaoFim;
+	}
+	public void setPrevisaoFim(Date previsaoFim) {
+		this.previsaoFim = previsaoFim;
+	}
+	public String getPrevisaoIniStr() {
+		return previsaoIniStr;
+	}
+	public void setPrevisaoIniStr(String previsaoIniStr) {
+		this.previsaoIniStr = previsaoIniStr;
+	}
+	public String getPrevisaoFimStr() {
+		return previsaoFimStr;
+	}
+	public void setPrevisaoFimStr(String previsaoFimStr) {
+		this.previsaoFimStr = previsaoFimStr;
+	}
+	public static String	calcularTempoMinutosStr(Date data, double minutosd) {
+		int minutos = (int) minutosd;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(data);
+		calendar.add(Calendar.MINUTE,minutos);
+		Date novaData = calendar.getTime();
+		SimpleDateFormat  dataFormat = new SimpleDateFormat("dd/MM/yyyy");
+		return dataFormat.format(novaData);
+	}
+	public static Date	calcularTempoMinutos(Date data, double minutosd) {
+		int minutos = (int) minutosd;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(data);
+		calendar.add(Calendar.MINUTE,minutos);
+		Date novaData = calendar.getTime();
+		return novaData;
+	}
+	
+	
+}
 	
 	
 

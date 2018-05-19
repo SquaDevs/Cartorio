@@ -26,9 +26,9 @@
 							<th>Senha Numero</th>
 							<th>Tipo de Serviço</th>
 							<th>Status</th>
-							<th>Tempo Medio</th>
+							<!--  <th>Tempo Medio</th>
 							<th>Horario de Inicio</th>
-							<th>Aguardando a</th>
+							<th>Aguardando a</th>-->
 						</tr>
 					</thead>
 						<tbody>
@@ -37,9 +37,9 @@
 								<td>${senha.servico.sigla} ${senha.numero}</td>
 								<td>${senha.servico.nome}</td>
 								<td>${senha.status}</td>
+							<!-- <td>--</td>
 								<td>--</td>
-								<td>--</td>
-								<td>--</td>
+								<td>--</td>-->
 							</tr>
 							</c:forEach>
 						</tbody>

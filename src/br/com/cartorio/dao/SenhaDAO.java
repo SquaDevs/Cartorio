@@ -97,7 +97,7 @@ public class SenhaDAO {
 
 		if (senhas.isEmpty()) {
 			jpql = "select s from Atendimento a " + " inner join a.senha s " + "where a.subServico.ordem =:pOrdem "
-					+ "	 and a.status = 'Fechado' " + "	 and s.servico.id =:pServico";
+					+ "	 and a.status = 'Atendimento Finalizado' " + "	 and s.servico.id =:pServico";
 
 			Query query = manager.createQuery(jpql);
 			query.setParameter("pOrdem", subServico.getOrdem() - 1);
@@ -108,7 +108,7 @@ public class SenhaDAO {
 
 		} else {
 			jpql = "select s from Atendimento a " + " inner join a.senha s " + "where a.subServico.ordem =:pOrdem "
-					+ "	 and a.status = 'Fechado' " + "	 and s.servico.id =:pServico"
+					+ "	 and a.status = 'Atendimento Finalizado' " + "	 and s.servico.id =:pServico"
 					+ "	 and s.id not in (:pSenhas)";
 
 			Query query = manager.createQuery(jpql);
@@ -150,7 +150,7 @@ public class SenhaDAO {
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasBySubServicoEmAtendimento(SubServico subServico) throws IOException {
 		String jpql = "select s from Atendimento a " + " inner join a.senha s "
-				+ "where a.subServico.id =:pSubServico and a.status = 'Em Atendimento'";
+				+ "where a.subServico.id =:pSubServico and a.status = 'Atendimento em Andamento'";
 
 		Query query = manager.createQuery(jpql);
 		query.setParameter("pSubServico", subServico.getId());
@@ -189,10 +189,10 @@ public class SenhaDAO {
 	public Double previsaoInicio(Servico servico) throws IOException{
 		
 		String jpql = "Select avg(TIMESTAMPDIFF(minute, s.data_inicio, a.data_inicio)) "
-					+ "from Senha s "
-					+ "inner join Atendimento a "
+					+ "from senha s "
+					+ "inner join atendimento a "
 					+ "	 on a.id_senha = s.id "
-					+ "inner join SubServico sub "
+					+ "inner join subservico sub "
 					+ "	 on sub.id = a.id_subservico "
 					+ "where sub.ordem = 1 and sub.id_servico = :pServico";
 		
@@ -215,10 +215,10 @@ public class SenhaDAO {
 		Integer maxOrdem = subServicoService.maxOrdem(servico);
 
 		String jpql = "Select avg(TIMESTAMPDIFF(minute, s.data_inicio, a.data_fim)) "
-				+ "from Senha s "
-				+ "inner join Atendimento a "
+				+ "from senha s "
+				+ "inner join atendimento a "
 				+ "	 on a.id_senha = s.id "
-				+ "inner join SubServico sub "
+				+ "inner join subservico sub "
 				+ "	 on sub.id = a.id_subservico "
 				+ "where sub.ordem = :pOrdem and sub.id_servico = :pServico";
 	
