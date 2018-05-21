@@ -8,7 +8,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -78,7 +77,7 @@ public class SenhaDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Senha> listarSenhasByPrimeiroSubServico(SubServico subServico) throws IOException {
+	public List<Senha> listarSenhasBySubServicoParaAtenderPrimeiro(SubServico subServico) throws IOException {
 		String jpql = "select s from Atendimento a " + " right join a.senha s "
 				+ "where a.id is null and s.servico.id =:pServico";
 
@@ -130,7 +129,7 @@ public class SenhaDAO {
 
 		Query query = manager.createQuery(jpql);
 		query.setParameter("pOrdem", subServico.getOrdem());
-		query.setParameter("pServico", subServico.getServico().getId());
+		query.setParameter("pServico", subServico.getServico().getId() + 1);
 		List<Integer> result = query.getResultList();
 
 		return result;
@@ -156,17 +155,6 @@ public class SenhaDAO {
 		Query query = manager.createQuery(jpql);
 		query.setParameter("pSubServico", subServico.getId());
 		List<Senha> result = query.getResultList();
-
-		return result;
-	}
-
-	public Senha listarSenhasByNumero(int numero, Servico servico) throws IOException {
-		String jpql = "select s from Senha s " + "where s.numero =:pNumero and s.servico.id =:pServico";
-
-		Query query = manager.createQuery(jpql);
-		query.setParameter("pNumero", numero);
-		query.setParameter("pServico", servico);
-		Senha result = (Senha) query.getSingleResult();
 
 		return result;
 	}

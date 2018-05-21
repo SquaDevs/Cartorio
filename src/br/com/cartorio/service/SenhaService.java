@@ -59,7 +59,7 @@ public class SenhaService {
 	}
 	
 	public List<Senha> listarSenhasByPrimeiroSubServico(SubServico subServico) throws IOException {
-		return dao.listarSenhasByPrimeiroSubServico(subServico);
+		return dao.listarSenhasBySubServicoParaAtenderPrimeiro(subServico);
 	}
 	
 	public List<Senha> listarSenhasBySubServicoParaAtender(SubServico subServico) throws IOException {
@@ -68,10 +68,6 @@ public class SenhaService {
 	
 	public List<Senha> listarSenhasBySubServicoEmAtendimento(SubServico subServico) throws IOException {
 		return dao.listarSenhasBySubServicoEmAtendimento(subServico);
-	}
-	
-	public Senha listarSenhasByNumero(int numero, Servico servico) throws IOException {
-		return dao.listarSenhasByNumero(numero, servico);
 	}
 	
 	public int ultimoNumeroByServico(Servico servico) throws IOException{
