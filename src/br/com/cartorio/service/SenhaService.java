@@ -58,8 +58,8 @@ public class SenhaService {
 		return dao.listarSenhasBySubServico(subServico);
 	}
 	
-	public List<Senha> listarSenhasByPrimeiroSubServico(SubServico subServico) throws IOException {
-		return dao.listarSenhasBySubServicoParaAtenderPrimeiro(subServico);
+	public List<Senha> listarSenhasBySubServicoParaAtenderInicio(SubServico subServico) throws IOException {
+		return dao.listarSenhasBySubServicoParaAtenderInicio(subServico);
 	}
 	
 	public List<Senha> listarSenhasBySubServicoParaAtender(SubServico subServico) throws IOException {

@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import br.com.cartorio.entity.Atendimento;
 import br.com.cartorio.entity.Senha;
 import br.com.cartorio.entity.Servico;
 import br.com.cartorio.entity.SubServico;
@@ -69,15 +70,22 @@ public class SenhaDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasPainel() throws IOException {
-		String jpql = "select s from Senha s " + "where s.status != 'finalizado'";
+		String jpql = "select s from Senha s " + "where s.status != '"+Senha.getStatusSenhaEncerrada()+"'";
 		Query query = manager.createQuery(jpql);
 		query.setMaxResults(5);
 		List<Senha> result = query.getResultList();
 		return result;
 	}
-
+	
+	
+	/**
+	 * Lista as senhas que ainda não foram atendidas para o PRIMEIRO SUBSERVICO
+	 * É usado um metodo diferente para o primeiro ja que a senha ainda não esta
+	 * na fila de atendimento ainda
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
-	public List<Senha> listarSenhasBySubServicoParaAtenderPrimeiro(SubServico subServico) throws IOException {
+	public List<Senha> listarSenhasBySubServicoParaAtenderInicio(SubServico subServico) throws IOException {
 		String jpql = "select s from Atendimento a " + " right join a.senha s "
 				+ "where a.id is null and s.servico.id =:pServico";
 
@@ -87,7 +95,12 @@ public class SenhaDAO {
 
 		return result;
 	}
-
+	
+	
+	/**
+	 * Lista as senhas que ainda não foram atendidas para os SUBSERVICOS DE ORDEM 2 A 'N'
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasBySubServicoParaAtender(SubServico subServico) throws IOException {
 
@@ -97,7 +110,7 @@ public class SenhaDAO {
 
 		if (senhas.isEmpty()) {
 			jpql = "select s from Atendimento a " + " inner join a.senha s " + "where a.subServico.ordem =:pOrdem "
-					+ "	 and a.status = 'Atendimento Finalizado' " + "	 and s.servico.id =:pServico";
+					+ "	 and a.status = '"+Atendimento.getStatusatendimentofinalizado()+"' " + "	 and s.servico.id =:pServico";
 
 			Query query = manager.createQuery(jpql);
 			query.setParameter("pOrdem", subServico.getOrdem() - 1);
@@ -108,7 +121,7 @@ public class SenhaDAO {
 
 		} else {
 			jpql = "select s from Atendimento a " + " inner join a.senha s " + "where a.subServico.ordem =:pOrdem "
-					+ "	 and a.status = 'Atendimento Finalizado' " + "	 and s.servico.id =:pServico"
+					+ "	 and a.status = '"+Atendimento.getStatusatendimentofinalizado()+"' " + "	 and s.servico.id =:pServico"
 					+ "	 and s.id not in (:pSenhas)";
 
 			Query query = manager.createQuery(jpql);
@@ -121,7 +134,11 @@ public class SenhaDAO {
 		}
 
 	}
-
+	
+	/**
+	 * METODO PRIVADO usado no proprio DAO para garantir que um atendimento finalizado
+	 * reapareça novamente 
+	 */
 	@SuppressWarnings("unchecked")
 	private List<Integer> listarSenhasProximoSubServico(SubServico subServico) throws IOException {
 		String jpql = "select s.id from Atendimento a " + "inner join a.senha s " + "where a.subServico.ordem =:pOrdem "
@@ -135,6 +152,10 @@ public class SenhaDAO {
 		return result;
 	}
 
+	/**
+	 * Metodo simples para mostrar as senhas que ja tem atendimento com base em um 
+	 * SubServico
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasBySubServico(SubServico subServico) throws IOException {
 		String jpql = "select s from Atendimento a " + " inner join a.senha s "
@@ -146,11 +167,15 @@ public class SenhaDAO {
 
 		return result;
 	}
-
+	
+	/**
+	 * Metodo simples para mostrar as senhas que ja tem atendimento com base em um 
+	 * SubServico e que ja estão em andamento
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasBySubServicoEmAtendimento(SubServico subServico) throws IOException {
 		String jpql = "select s from Atendimento a " + " inner join a.senha s "
-				+ "where a.subServico.id =:pSubServico and a.status = 'Atendimento em Andamento'";
+				+ "where a.subServico.id =:pSubServico and a.status = '"+Atendimento.getStatusatendimentoandamento()+"'";
 
 		Query query = manager.createQuery(jpql);
 		query.setParameter("pSubServico", subServico.getId());
@@ -159,6 +184,10 @@ public class SenhaDAO {
 		return result;
 	}
 
+	
+	/**
+	 * Metodo simples para saber qual o numero da ultima senha
+	 */
 	@SuppressWarnings("unchecked")
 	public int ultimoNumeroByServico(Servico servico) throws IOException {
 

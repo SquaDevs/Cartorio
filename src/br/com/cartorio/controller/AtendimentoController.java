@@ -61,7 +61,7 @@ public class AtendimentoController {
 			List<Senha> senhasEmAtendimento = null;
 			
 			if(subServicoResgatado.getOrdem() == 1) {
-				senhasParaAtender = senhaService.listarSenhasByPrimeiroSubServico(subServicoResgatado);
+				senhasParaAtender = senhaService.listarSenhasBySubServicoParaAtenderInicio(subServicoResgatado);
 			}else {
 				senhasParaAtender = senhaService.listarSenhasBySubServicoParaAtender(subServicoResgatado);
 			}

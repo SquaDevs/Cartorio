@@ -77,7 +77,7 @@ public class AtendimentoRestController {
 			subServicoResgatado = subServicoService.listarSubServico(subServico.getId());
 			
 			if(subServicoResgatado.getOrdem() == 1) {
-				senhasParaAtender = senhaService.listarSenhasByPrimeiroSubServico(subServicoResgatado);
+				senhasParaAtender = senhaService.listarSenhasBySubServicoParaAtenderInicio(subServicoResgatado);
 			}else {
 				senhasParaAtender = senhaService.listarSenhasBySubServicoParaAtender(subServicoResgatado);
 			}
