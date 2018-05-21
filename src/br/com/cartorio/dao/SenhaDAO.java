@@ -129,7 +129,7 @@ public class SenhaDAO {
 
 		Query query = manager.createQuery(jpql);
 		query.setParameter("pOrdem", subServico.getOrdem());
-		query.setParameter("pServico", subServico.getServico().getId() + 1);
+		query.setParameter("pServico", subServico.getServico().getId());
 		List<Integer> result = query.getResultList();
 
 		return result;
