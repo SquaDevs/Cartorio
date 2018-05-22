@@ -6,7 +6,7 @@ import java.util.Date;
 
 import br.com.cartorio.entity.Senha;
 
-class SenhaRest {
+public class SenhaDTO {
 
 	private Senha senha;
 	private Date previsaoIni;

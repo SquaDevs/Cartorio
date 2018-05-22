@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.cartorio.dto.SenhaDTO;
 import br.com.cartorio.entity.Senha;
 import br.com.cartorio.service.SenhaService;
 
@@ -33,27 +34,27 @@ public class SenhaRestController {
 	public SenhaRestController(SenhaService senhaService) {
 		this.senhaService = senhaService;
 	}
-	SenhaRest
+	
 	@CrossOrigin
 	@Transactional
 	@RequestMapping(method=RequestMethod.POST ,produces = "application/json", consumes = "application/json")
 
-	public ResponseEntity<SenhaRest> inserirSenha(@RequestBody Senha senha) {
+	public ResponseEntity<SenhaDTO> inserirSenha(@RequestBody Senha senha) {
 		System.out.println( senha);
-		SenhaRest  rest =   new SenhaRest();
+		SenhaDTO  rest =   new SenhaDTO();
 		try {	
 			senhaService.inserirSenha(senha);
 			rest.setSenha(senha);
-			Date previsaoFim =SenhaRest.calcularTempoMinutos(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
+			Date previsaoFim =SenhaDTO.calcularTempoMinutos(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
 			rest.setPrevisaoFim(previsaoFim);
-			Date previsaoIni = SenhaRest.calcularTempoMinutos(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
+			Date previsaoIni = SenhaDTO.calcularTempoMinutos(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
 			rest.setPrevisaoIni(previsaoIni);
 				System.out.println(rest.getPrevisaoFim());
 			
-			return new ResponseEntity<SenhaRest>(rest, HttpStatus.CREATED);
+			return new ResponseEntity<SenhaDTO>(rest, HttpStatus.CREATED);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResponseEntity<SenhaRest>(rest, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<SenhaDTO>(rest, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
@@ -72,22 +73,22 @@ public class SenhaRestController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/{id}" )
-	public ResponseEntity<SenhaRest> listarSenha(@PathVariable("id") int id) {
+	public ResponseEntity<SenhaDTO> listarSenha(@PathVariable("id") int id) {
 		Senha senha = null;
-		SenhaRest  rest =   new SenhaRest();
+		SenhaDTO  rest =   new SenhaDTO();
 		try {
 			senha = senhaService.listarSenha(id);
 			rest.setSenha(senha);
-			String previsaoFim =SenhaRest.calcularTempoMinutosStr(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
+			String previsaoFim =SenhaDTO.calcularTempoMinutosStr(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
 			rest.setPrevisaoFimStr(previsaoFim);
-			String previsaoIni = SenhaRest.calcularTempoMinutosStr(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
+			String previsaoIni = SenhaDTO.calcularTempoMinutosStr(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
 			rest.setPrevisaoIniStr(previsaoIni);
 			
 			
-			return new ResponseEntity<SenhaRest>(rest, HttpStatus.OK);
+			return new ResponseEntity<SenhaDTO>(rest, HttpStatus.OK);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResponseEntity<SenhaRest>(rest, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<SenhaDTO>(rest, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
