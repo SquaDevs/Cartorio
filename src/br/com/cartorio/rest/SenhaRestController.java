@@ -108,6 +108,37 @@ public class SenhaRestController {
 		}
 	}
 	
+	@CrossOrigin
+	@RequestMapping(method=RequestMethod.GET, value="/chamar" )
+	public ResponseEntity<Senha> chamarSenha() {
+		List<Senha> senhas = null;
+		Senha senhaChamada = null;
+		
+		try {
+			senhas = senhaService.chamarSenhasPainel();
+			System.out.println(senhas);
+			 
+			if(!senhas.isEmpty()) {
+				if(senhas.size() > 1 && senhas.get(1).getPreferencial() && !senhas.get(0).getPreferencial()) {
+					if(senhas.get(1).getNumero() - senhas.get(0).getNumero() < 3) {
+						senhaChamada = senhas.get(1);
+					}
+				} else if(senhas.size() > 2 && senhas.get(2).getPreferencial() && (!senhas.get(0).getPreferencial() && !senhas.get(1).getPreferencial())) {
+					if(senhas.get(2).getNumero() - senhas.get(0).getNumero() < 3) {
+						senhaChamada = senhas.get(2);
+					}
+				} if(senhaChamada == null) {
+					senhaChamada = senhas.get(0);
+				}
+			}
+			
+			return new ResponseEntity<Senha>(senhaChamada, HttpStatus.OK);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<Senha>(senhaChamada, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 }
 	
 	

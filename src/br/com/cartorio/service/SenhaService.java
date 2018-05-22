@@ -54,6 +54,10 @@ public class SenhaService {
 		return dao.listarSenhasPainel();
 	}
 	
+	public List<Senha> chamarSenhasPainel() throws IOException {
+		return dao.chamarSenhasPainel();
+	}
+	
 	public List<Senha> listarSenhasBySubServico(SubServico subServico) throws IOException {
 		return dao.listarSenhasBySubServico(subServico);
 	}

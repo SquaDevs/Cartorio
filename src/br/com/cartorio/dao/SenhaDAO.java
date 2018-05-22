@@ -77,6 +77,15 @@ public class SenhaDAO {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Senha> chamarSenhasPainel() throws IOException {
+		String jpql = "select s from Senha s " + "where s.status != '"+Senha.getStatusSenhaEncerrada()+"'"
+				+ " and s.status != '"+Senha.getStatusSenhaAndamento()+"'";
+		Query query = manager.createQuery(jpql);
+		query.setMaxResults(5);
+		List<Senha> result = query.getResultList();
+		return result;
+	}
 	
 	/**
 	 * Lista as senhas que ainda não foram atendidas para o PRIMEIRO SUBSERVICO
