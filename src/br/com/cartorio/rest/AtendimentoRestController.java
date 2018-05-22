@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,7 @@ public class AtendimentoRestController {
 		this.senhaService = senhaService;
 	}
 	
+	@CrossOrigin
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<List<Atendimento>> listarAtendimentos() {
 		List<Atendimento> atendimentos = null;
@@ -54,6 +56,7 @@ public class AtendimentoRestController {
 		}
 	}
 	
+	@CrossOrigin
 	@RequestMapping(method=RequestMethod.GET, value="/{id}")
 	public ResponseEntity<Atendimento> listarAtendimento(@PathVariable("id") int id) {
 		Atendimento atendimento = null;
@@ -68,6 +71,8 @@ public class AtendimentoRestController {
 		}
 	}
 	
+	@Transactional
+	@CrossOrigin
 	@RequestMapping(method=RequestMethod.POST, value="/naoAtendidos")
 	public ResponseEntity<List<Senha>> listarAtendimentoNaoAtendidos(@RequestBody SubServico subServico) {
 		SubServico subServicoResgatado  = null;
@@ -90,6 +95,7 @@ public class AtendimentoRestController {
 		}
 	}
 	
+	@CrossOrigin
 	@RequestMapping(method=RequestMethod.POST, value="/emAtendimento")
 	public ResponseEntity<List<Senha>> listarAtendimentoEmAtendimento(@RequestBody SubServico subServico) {
 		SubServico subServicoResgatado  = null;
@@ -109,6 +115,7 @@ public class AtendimentoRestController {
 		}
 	}
 	
+	@CrossOrigin
 	@RequestMapping(method=RequestMethod.POST, value="/atender")
 	public void atenderSenha(@RequestBody AtendimentoDTO atendimentoDTO) {
 		SubServico subServicoResgatado  = null;		
@@ -130,6 +137,7 @@ public class AtendimentoRestController {
 		}
 	}
 	
+	@CrossOrigin
 	@RequestMapping(method=RequestMethod.POST, value="/finalizar")
 	public void finalizarSenha(@RequestBody AtendimentoDTO atendimentoDTO) {
 		SubServico subServicoResgatado  = null;		

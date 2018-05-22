@@ -18,7 +18,7 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
 		<property name="url" value="jdbc:mysql://localhost:3306/cartorio"></property>
 		<property name="username" value="root"></property>
-		<property name="password" value="root"></property>
+		<property name="password" value="pCQZyrR:)4Cy"></property>
 	</bean>
 	<!-- gerenciamento de jpa pelo spring -->
 	<bean id="entityManagerFactory"

@@ -45,10 +45,10 @@ public class SenhaRestController {
 		try {	
 			senhaService.inserirSenha(senha);
 			rest.setSenha(senha);
-			Date previsaoFim =SenhaDTO.calcularTempoMinutos(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
-			rest.setPrevisaoFim(previsaoFim);
-			Date previsaoIni = SenhaDTO.calcularTempoMinutos(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
-			rest.setPrevisaoIni(previsaoIni);
+//			Date previsaoFim =SenhaDTO.calcularTempoMinutos(senha.getData_fim(), senhaService.previsaoTermino(senha.getServico()));
+//			rest.setPrevisaoFim(previsaoFim);
+//			Date previsaoIni = SenhaDTO.calcularTempoMinutos(senha.getData_inicio(), senhaService.previsaoInicio(senha.getServico()));
+//			rest.setPrevisaoIni(previsaoIni);
 				System.out.println(rest.getPrevisaoFim());
 			
 			return new ResponseEntity<SenhaDTO>(rest, HttpStatus.CREATED);

@@ -7,22 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.cartorio.entity.Servico;
+import br.com.cartorio.entity.SubServico;
 import br.com.cartorio.service.ServicoService;
+import br.com.cartorio.service.SubServicoService;
 
 @RestController
 @RequestMapping("rest/servico")
 public class ServicoRestController {
 	
 	private final ServicoService servicoService;
+	private final SubServicoService subservicoServive;
 	
 	@Autowired
-	public ServicoRestController(ServicoService servicoService) {
+	public ServicoRestController(ServicoService servicoService,SubServicoService subservicoServive) {
 		this.servicoService = servicoService;
+		this.subservicoServive = subservicoServive;
 	}
 	
 	@CrossOrigin
@@ -38,5 +43,23 @@ public class ServicoRestController {
 			return new ResponseEntity<List<Servico>>(servicos, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+
+	@CrossOrigin
+	@RequestMapping(method=RequestMethod.GET ,value = "/{id}")
+	public ResponseEntity<List<SubServico>> listarSubServicosbyServico(@PathVariable("id") int idServico) {
+		List<SubServico> subServicos = null ;
+		
+		try {
+			Servico servicos = servicoService.listarServico(idServico);
+			subServicos =subservicoServive.listarSubServicosByServico(servicos);
+			return new ResponseEntity<List<SubServico>>(subServicos, HttpStatus.OK);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<List<SubServico>>(subServicos, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
 }
 
