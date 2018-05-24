@@ -51,19 +51,5 @@ public class AtendimentoService {
 	public List<Atendimento> listarAtendimentosBySenha(Senha senha) throws IOException{
 		return dao.listarAtendimentosBySenha(senha);
 	}
-	
-	public Atendimento listarAtendimentosAnterior(Senha senha, SubServico subServico) throws IOException {
-		return dao.listarAtendimentosAnterior(senha, subServico);
-	}
-	
-	
-
-
-	
-	
-	
-	
-	
-	
 
 }
