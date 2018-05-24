@@ -68,6 +68,15 @@ public class SenhaDAO {
 		return result;
 	}
 
+	public Senha listarSenhaPainel(int id) throws IOException {
+		String jpql = "select s from Senha s " + "where s.status != '"+Senha.getStatusSenhaEncerrada()+"' "
+				    + "and s.id = "+ id;
+		Query query = manager.createQuery(jpql);
+		query.setMaxResults(5);
+		Senha senha = (Senha) query.getSingleResult();
+		return senha;
+	}
+		
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasPainel() throws IOException {
 		String jpql = "select s from Senha s " + "where s.status != '"+Senha.getStatusSenhaEncerrada()+"'";
@@ -229,7 +238,7 @@ public class SenhaDAO {
 		Double media;
 		
 		if(mediaBigDecimal == null ) {
-			media = null;
+			media = 0.0;
 		}else {
 			media = mediaBigDecimal.doubleValue();
 		}
@@ -256,7 +265,7 @@ public class SenhaDAO {
 		Double media;
 		
 		if(mediaBigDecimal == null ) {
-			media = null;
+			media = 0.0;
 		}else {
 			media = mediaBigDecimal.doubleValue();
 		}

@@ -1,18 +1,24 @@
 package br.com.cartorio.dto;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.cartorio.entity.Senha;
 
 public class SenhaDTO {
 
 	private Senha senha;
+	
+	@JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
 	private Date previsaoIni;
+	
+	@JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
 	private Date previsaoFim;
-	private String previsaoIniStr;
-	private String previsaoFimStr;
+
 
 	public Senha getSenha() {
 		return senha;
@@ -38,38 +44,22 @@ public class SenhaDTO {
 		this.previsaoFim = previsaoFim;
 	}
 
-	public String getPrevisaoIniStr() {
-		return previsaoIniStr;
-	}
-
-	public void setPrevisaoIniStr(String previsaoIniStr) {
-		this.previsaoIniStr = previsaoIniStr;
-	}
-
-	public String getPrevisaoFimStr() {
-		return previsaoFimStr;
-	}
-
-	public void setPrevisaoFimStr(String previsaoFimStr) {
-		this.previsaoFimStr = previsaoFimStr;
-	}
-
-	public static String calcularTempoMinutosStr(Date data, double minutosd) {
-		int minutos = (int) minutosd;
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(data);
-		calendar.add(Calendar.MINUTE, minutos);
-		Date novaData = calendar.getTime();
-		SimpleDateFormat dataFormat = new SimpleDateFormat("dd/MM/yyyy");
-		return dataFormat.format(novaData);
-	}
-
 	public static Date calcularTempoMinutos(Date data, double minutosd) {
 		int minutos = (int) minutosd;
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(data);
 		calendar.add(Calendar.MINUTE, minutos);
-		Date novaData = calendar.getTime();
+		SimpleDateFormat dataFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date novaData = null;
+		
+		if(minutos > 0) {
+			try {
+				novaData = dataFormat.parse((dataFormat.format(calendar.getTime())));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		return novaData;
 	}
 

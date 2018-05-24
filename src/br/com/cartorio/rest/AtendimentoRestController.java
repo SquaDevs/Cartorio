@@ -1,8 +1,6 @@
 package br.com.cartorio.rest;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -71,7 +69,6 @@ public class AtendimentoRestController {
 		}
 	}
 	
-	@Transactional
 	@CrossOrigin
 	@RequestMapping(method=RequestMethod.POST, value="/naoAtendidos")
 	public ResponseEntity<List<Senha>> listarAtendimentoNaoAtendidos(@RequestBody SubServico subServico) {
@@ -106,7 +103,6 @@ public class AtendimentoRestController {
 			
 			senhasEmAtendimento = senhaService.listarSenhasBySubServicoEmAtendimento(subServicoResgatado);
 
-			
 			return new ResponseEntity<List<Senha>>(senhasEmAtendimento, HttpStatus.OK);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -114,9 +110,9 @@ public class AtendimentoRestController {
 
 		}
 	}
-	
+		
 	@CrossOrigin
-	@RequestMapping(method=RequestMethod.POST, value="/atender")
+	@RequestMapping(method=RequestMethod.PUT, value="/atender")
 	public void atenderSenha(@RequestBody AtendimentoDTO atendimentoDTO) {
 		SubServico subServicoResgatado  = null;		
 		Senha senhaResgatada = null;
@@ -138,7 +134,7 @@ public class AtendimentoRestController {
 	}
 	
 	@CrossOrigin
-	@RequestMapping(method=RequestMethod.POST, value="/finalizar")
+	@RequestMapping(method=RequestMethod.PUT, value="/finalizar")
 	public void finalizarSenha(@RequestBody AtendimentoDTO atendimentoDTO) {
 		SubServico subServicoResgatado  = null;		
 		Senha senhaResgatada = null;

@@ -85,4 +85,8 @@ public class SenhaService {
 	public Double previsaoTermino(Servico servico) throws IOException{
 		return dao.previsaoTermino(servico);
 	}
+
+	public Senha listarSenhaPainel(int id) throws IOException {
+		return dao.listarSenhaPainel(id);
+	}
 }

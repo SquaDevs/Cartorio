@@ -13,54 +13,50 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name="senha")
+@Table(name = "senha")
 public class Senha implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final String statusSenhaCriada = "Senha Criada";
 	private static final String statusSenhaAndamento = "Senha em Andamento";
 	private static final String statusSenhaEncerrada = "Senha Encerrada";
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id;
-	
+
 	@NotNull
-	@Column(name="numero")
+	@Column(name = "numero")
 	private int numero;
-	
-	
-	@Column(name="preferencial")
+
+	@Column(name = "preferencial")
 	private Boolean preferencial;
-	
-	@Column(name="status")
+
+	@Column(name = "status")
 	private String status;
-	
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@NotNull
-	@Column(name="data_inicio")
+	@Column(name = "data_inicio")
 	private Date data_inicio;
-	
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	@Column(name="data_fim")
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "data_fim")
 	private Date data_fim;
-	
+
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name="id_servico")
+	@JoinColumn(name = "id_servico")
 	private Servico servico;
-	
-	
+
 	public int getId() {
 		return id;
 	}
@@ -100,8 +96,6 @@ public class Senha implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
 
 	public Date getData_inicio() {
 		return data_inicio;
@@ -110,7 +104,7 @@ public class Senha implements Serializable {
 	public void setData_inicio(Date data_inicio) {
 		this.data_inicio = data_inicio;
 	}
-	
+
 	public Date getData_fim() {
 		return data_fim;
 	}
@@ -137,6 +131,4 @@ public class Senha implements Serializable {
 				+ ", data_inicio=" + data_inicio + ", data_fim=" + data_fim + ", servico=" + servico + "]";
 	}
 
-	
-	
 }

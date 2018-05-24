@@ -18,42 +18,25 @@ import br.com.cartorio.service.ServicoService;
 import br.com.cartorio.service.SubServicoService;
 
 @RestController
-@RequestMapping("rest/servico")
-public class ServicoRestController {
+@RequestMapping("rest/subServico")
+public class SubServicoRestController {
 	
 	private final ServicoService servicoService;
 	private final SubServicoService subservicoServive;
 	
 	@Autowired
-	public ServicoRestController(ServicoService servicoService,SubServicoService subservicoServive) {
+	public SubServicoRestController(ServicoService servicoService,SubServicoService subservicoServive) {
 		this.servicoService = servicoService;
 		this.subservicoServive = subservicoServive;
 	}
 	
 	@CrossOrigin
 	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<List<Servico>> listarServicos() {
-		List<Servico> servicos = null;
+	public ResponseEntity<List<SubServico>> listarServicos() {
+		List<SubServico> subServicos = null;
 		
 		try {
-			servicos = servicoService.listarServicos();
-			return new ResponseEntity<List<Servico>>(servicos, HttpStatus.OK);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new ResponseEntity<List<Servico>>(servicos, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-
-	@CrossOrigin
-	@RequestMapping(method=RequestMethod.GET ,value = "/{id}")
-	public ResponseEntity<List<SubServico>> listarSubServicosbyServico(@PathVariable("id") int id) {
-		List<SubServico> subServicos = null ;
-		Servico servico = null;
-		
-		try {
-			servico = servicoService.listarServico(id);
-			subServicos =subservicoServive.listarSubServicosByServico(servico);
+			subServicos = subservicoServive.listarSubServicos();
 			return new ResponseEntity<List<SubServico>>(subServicos, HttpStatus.OK);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -61,6 +44,19 @@ public class ServicoRestController {
 		}
 	}
 	
-	
+	@CrossOrigin
+	@RequestMapping(method=RequestMethod.GET, value = "/{id}")
+	public ResponseEntity<List<SubServico>> listarServicos(@PathVariable("id") int id) {
+		List<SubServico> subServicos = null;
+		Servico servico = null;
+		
+		try {
+			servico = servicoService.listarServico(id);
+			subServicos = subservicoServive.listarSubServicosByServico(servico);
+			return new ResponseEntity<List<SubServico>>(subServicos, HttpStatus.OK);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<List<SubServico>>(subServicos, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
-
