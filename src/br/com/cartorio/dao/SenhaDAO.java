@@ -31,6 +31,15 @@ public class SenhaDAO {
 	@PersistenceContext
 	EntityManager manager;
 
+	/**
+	 * Insere a senha recebida como parametro, deixando seu status como 'Senha Criada' 
+	 * e gerando a data no momento em que o metodo é criado
+	 * 
+	 * @param senha Um objeto do tipo Senha a ser inserido 
+	 * @return  O id da senha que foi inserida, do tipo inteiro
+	 * @throws IOException
+	 * 
+	 */
 	public int inserirSenha(Senha senha) throws IOException {
 		senha.setStatus(Senha.getStatusSenhaCriada());
 		senha.setData_inicio(new Date());
@@ -38,12 +47,27 @@ public class SenhaDAO {
 		return senha.getId();
 	}
 
+	/**
+	 * Altera o status da senha receida como parametro para 'Senha em Andamento'
+	 * 
+	 * @param senha Um objeto do tipo Senha a ser atendida 
+	 * @throws IOException
+	 * 
+	 */
 	public void atenderSenha(Senha senha) throws IOException {
 		Senha senhaAlterada = manager.find(Senha.class, senha.getId());
 		senhaAlterada.setStatus(Senha.getStatusSenhaAndamento());
 		manager.merge(senhaAlterada);
 	}
-
+	
+	/**
+	 * Altera o status da senha receida como parametro para 'Senha Encerrada'
+	 * e gera data de finalização da senha
+	 * 
+	 * @param senha Um objeto do tipo Senha a ser finalizada 
+	 * @throws IOException
+	 * 
+	 */
 	public void finalizarSenha(Senha senha) throws IOException {
 		Senha senhaAlterada = manager.find(Senha.class, senha.getId());
 		senhaAlterada.setStatus(Senha.getStatusSenhaEncerrada());
@@ -51,15 +75,37 @@ public class SenhaDAO {
 		manager.merge(senhaAlterada);
 	}
 
+	/**
+	 * Deleta a senha passada como parametro
+	 * 
+	 * @param senha Um objeto do tipo Senha a ser deletada 
+	 * @throws IOException
+	 * 
+	 */
 	public void deletarSenha(Senha senha) throws IOException {
 		manager.remove(senha);
 	}
 
+	/**
+	 * Lista ou Seleciona uma senha atraves do parametro idSenha
+	 * 
+	 * @param idSenha Uma variavel do tipo int, como id da senha
+	 * @return  Um objeto do tipo Senha, correspondente ao id
+	 * @throws IOException
+	 * 
+	 */
 	public Senha listarSenha(int idSenha) throws IOException {
 		Senha senha = manager.find(Senha.class, idSenha);
 		return senha;
 	}
 
+	/**
+	 * Lista todas as senha existentes
+	 * 
+	 * @return  Um objeto do tipo List<Senha>, com todas as senhas
+	 * @throws IOException
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhas() throws IOException {
 		String jpql = "select s from Senha s";
@@ -68,6 +114,14 @@ public class SenhaDAO {
 		return result;
 	}
 
+	/**
+	 * Lista ou Seleciona uma senha atraves do parametro id
+	 * 
+	 * @param id Uma variavel do tipo int, como id da senha
+	 * @return  Um objeto do tipo Senha, correspondente ao id
+	 * @throws IOException
+	 * 
+	 */
 	public Senha listarSenhaPainel(int id) throws IOException {
 		String jpql = "select s from Senha s " + "where s.status != '"+Senha.getStatusSenhaEncerrada()+"' "
 				    + "and s.id = "+ id;
@@ -76,7 +130,14 @@ public class SenhaDAO {
 		Senha senha = (Senha) query.getSingleResult();
 		return senha;
 	}
-		
+	
+	/**
+	 * Lista todas as senha existentes que não foram finalizadas
+	 * 
+	 * @return  Um objeto do tipo List<Senha>, com as senhas
+	 * @throws IOException
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasPainel() throws IOException {
 		String jpql = "select s from Senha s " + "where s.status != '"+Senha.getStatusSenhaEncerrada()+"'";
@@ -86,6 +147,13 @@ public class SenhaDAO {
 		return result;
 	}
 	
+	/**
+	 * Lista todas as senha existentes que não foram finalizadas e não estão em atendimento
+	 * 
+	 * @return  Um objeto do tipo List<Senha>, com as senhas
+	 * @throws IOException
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Senha> chamarSenhasPainel() throws IOException {
 		String jpql = "select s from Senha s " + "where s.status != '"+Senha.getStatusSenhaEncerrada()+"'"
@@ -98,8 +166,11 @@ public class SenhaDAO {
 	
 	/**
 	 * Lista as senhas que ainda não foram atendidas para o PRIMEIRO SUBSERVICO
-	 * É usado um metodo diferente para o primeiro ja que a senha ainda não esta
-	 * na fila de atendimento ainda
+	 * 
+	 * @param subServico Uma variavel do tipo SubServico, indicando para qual SubServico 
+	 * deseja utilizar o metodo
+	 * @return  Um objeto do tipo List<Senha>, com as senhas
+	 * @throws IOException
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
@@ -117,6 +188,11 @@ public class SenhaDAO {
 	
 	/**
 	 * Lista as senhas que ainda não foram atendidas para os SUBSERVICOS DE ORDEM 2 A 'N'
+	 * 
+	 * @param subServico Uma variavel do tipo SubServico, indicando para qual SubServico 
+	 * deseja utilizar o metodo
+	 * @return  Um objeto do tipo List<Senha>, com as senhas
+	 * @throws IOException
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
@@ -154,8 +230,14 @@ public class SenhaDAO {
 	}
 	
 	/**
-	 * METODO PRIVADO usado no proprio DAO para garantir que um atendimento finalizado
-	 * reapareça novamente 
+	 * Metodo privado usado no proprio DAO para garantir que um atendimento finalizado não
+	 * apareça novamente 
+	 * 
+	 * @param subServico Uma variavel do tipo SubServico, indicando para qual SubServico 
+	 * deseja utilizar o metodo
+	 * @return  Um objeto do tipo List<Integer>, com as senhas
+	 * @throws IOException
+	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	private List<Integer> listarSenhasProximoSubServico(SubServico subServico) throws IOException {
@@ -171,8 +253,14 @@ public class SenhaDAO {
 	}
 
 	/**
-	 * Metodo simples para mostrar as senhas que ja tem atendimento com base em um 
+	 * Metodo para mostrar as senhas que ja tem atendimento com base em um 
 	 * SubServico
+	 * 
+	 * @param subServico Uma variavel do tipo SubServico, indicando para qual SubServico 
+	 * deseja utilizar o metodo
+	 * @return  Um objeto do tipo List<Senha>, com as senhas
+	 * @throws IOException
+	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasBySubServico(SubServico subServico) throws IOException {
@@ -187,8 +275,14 @@ public class SenhaDAO {
 	}
 	
 	/**
-	 * Metodo simples para mostrar as senhas que ja tem atendimento com base em um 
-	 * SubServico e que ja estão em andamento
+	 * Metodo para mostrar as senhas que ja tem atendimento com base em um 
+	 * SubServico e que estão em andamento
+	 * 
+	 * @param subServico Uma variavel do tipo SubServico, indicando para qual SubServico 
+	 * deseja utilizar o metodo
+	 * @return  Um objeto do tipo List<Senha>, com as senhas
+	 * @throws IOException
+	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Senha> listarSenhasBySubServicoEmAtendimento(SubServico subServico) throws IOException {
@@ -204,7 +298,13 @@ public class SenhaDAO {
 
 	
 	/**
-	 * Metodo simples para saber qual o numero da ultima senha
+	 * Metodo para saber qual o numero da ultima senha
+	 * 
+	 * @param subServico Uma variavel do tipo SubServico, indicando para qual SubServico 
+	 * deseja utilizar o metodo
+	 * @return  Um int como numero da ultima senha
+	 * @throws IOException
+	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	public int ultimoNumeroByServico(Servico servico) throws IOException {
@@ -221,7 +321,16 @@ public class SenhaDAO {
 		}
 		return maior;
 	}
-
+	
+	/**
+	 * Metodo para saber qual a media de previsão de inicio de atendimento
+	 * 
+	 * @param subServico Uma variavel do tipo Servico, indicando para qual Servico 
+	 * deseja utilizar o metodo
+	 * @return  Um objeto Double como a previsão em minutos
+	 * @throws IOException
+	 * 
+	 */
 	public Double previsaoInicio(Servico servico) throws IOException{
 		
 		String jpql = "Select avg(TIMESTAMPDIFF(minute, s.data_inicio, a.data_inicio)) "
@@ -246,6 +355,15 @@ public class SenhaDAO {
 		return media;
 	}
 	
+	/**
+	 * Metodo para saber qual a media de previsão de termino de atendimento
+	 * 
+	 * @param subServico Uma variavel do tipo Servico, indicando para qual Servico 
+	 * deseja utilizar o metodo
+	 * @return  Um objeto Double como a previsão em minutos
+	 * @throws IOException
+	 * 
+	 */
 	public Double previsaoTermino(Servico servico) throws IOException{
 		
 		Integer maxOrdem = subServicoService.maxOrdem(servico);
