@@ -46,7 +46,21 @@ public class SubServicoRestController {
 	
 	@CrossOrigin
 	@RequestMapping(method=RequestMethod.GET, value = "/{id}")
-	public ResponseEntity<List<SubServico>> listarServicos(@PathVariable("id") int id) {
+	public ResponseEntity<SubServico> listarServicos(@PathVariable("id") int id) {
+		SubServico subServico = null;
+		
+		try {
+			subServico = subservicoServive.listarSubServico(id);
+			return new ResponseEntity<SubServico>(subServico, HttpStatus.OK);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new ResponseEntity<SubServico>(subServico, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@CrossOrigin
+	@RequestMapping(method=RequestMethod.GET, value = "/servico/{id}")
+	public ResponseEntity<List<SubServico>> listarServicosPorServico(@PathVariable("id") int id) {
 		List<SubServico> subServicos = null;
 		Servico servico = null;
 		

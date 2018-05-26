@@ -70,13 +70,13 @@ public class AtendimentoRestController {
 	}
 	
 	@CrossOrigin
-	@RequestMapping(method=RequestMethod.POST, value="/naoAtendidos")
-	public ResponseEntity<List<Senha>> listarAtendimentoNaoAtendidos(@RequestBody SubServico subServico) {
+	@RequestMapping(method=RequestMethod.GET, value="/naoAtendidos/{id}")
+	public ResponseEntity<List<Senha>> listarAtendimentoNaoAtendidos(@PathVariable("id") int id) {
 		SubServico subServicoResgatado  = null;
 		List<Senha> senhasParaAtender = null;
 		
 		try {
-			subServicoResgatado = subServicoService.listarSubServico(subServico.getId());
+			subServicoResgatado = subServicoService.listarSubServico(id);
 			
 			if(subServicoResgatado.getOrdem() == 1) {
 				senhasParaAtender = senhaService.listarSenhasBySubServicoParaAtenderInicio(subServicoResgatado);
@@ -93,13 +93,13 @@ public class AtendimentoRestController {
 	}
 	
 	@CrossOrigin
-	@RequestMapping(method=RequestMethod.POST, value="/emAtendimento")
-	public ResponseEntity<List<Senha>> listarAtendimentoEmAtendimento(@RequestBody SubServico subServico) {
+	@RequestMapping(method=RequestMethod.GET, value="/emAtendimento/{id}")
+	public ResponseEntity<List<Senha>> listarAtendimentoEmAtendimento(@PathVariable("id") int id) {
 		SubServico subServicoResgatado  = null;
 		List<Senha> senhasEmAtendimento = null;
 		
 		try {
-			subServicoResgatado = subServicoService.listarSubServico(subServico.getId());
+			subServicoResgatado = subServicoService.listarSubServico(id);
 			
 			senhasEmAtendimento = senhaService.listarSenhasBySubServicoEmAtendimento(subServicoResgatado);
 

@@ -18,17 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.cartorio.dto.SenhaDTO;
 import br.com.cartorio.entity.Senha;
+import br.com.cartorio.entity.Servico;
 import br.com.cartorio.service.SenhaService;
+import br.com.cartorio.service.ServicoService;
 
 @RestController
 @RequestMapping("rest/senha")
 public class SenhaRestController {
 
 	private final SenhaService senhaService;
+	private final ServicoService servicoService;
 
 	@Autowired
-	public SenhaRestController(SenhaService senhaService) {
+	public SenhaRestController(SenhaService senhaService, ServicoService servicoService) {
 		this.senhaService = senhaService;
+		this.servicoService = servicoService;
 	}
 
 	@CrossOrigin
@@ -116,4 +120,35 @@ public class SenhaRestController {
 			return new ResponseEntity<Senha>(senhaChamada, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+ 	@CrossOrigin
+	@RequestMapping(method = RequestMethod.GET, value = "/chamarAuto")
+	public ResponseEntity<Senha> chamarSenhaAutomatico() {
+ 		Senha senhaChamada = null;
+		List<Senha> senhas = null;
+
+ 		try {
+ 			senhas = senhaService.chamarSenhasPainel();
+			System.out.println(senhas);
+			 
+			if(!senhas.isEmpty()) {
+				if(senhas.size() > 1 && senhas.get(1).getPreferencial() && !senhas.get(0).getPreferencial()) {
+					if(senhas.get(1).getNumero() - senhas.get(0).getNumero() < 3) {
+						senhaChamada = senhas.get(1);
+					}
+				} else if(senhas.size() > 2 && senhas.get(2).getPreferencial() && (!senhas.get(0).getPreferencial() && !senhas.get(1).getPreferencial())) {
+						if(senhas.get(2).getNumero() - senhas.get(0).getNumero() < 3) {
+						senhaChamada = senhas.get(2);
+					}
+				} if(senhaChamada == null) {
+					senhaChamada = senhas.get(0);
+				}
+			}
+ 			
+ 			return new ResponseEntity<Senha>(senhaChamada, HttpStatus.OK);
+ 		} catch (IOException e) {
+ 			e.printStackTrace();
+ 			return new ResponseEntity<Senha>(senhaChamada, HttpStatus.INTERNAL_SERVER_ERROR);
+ 		}
+ 	}
 }
